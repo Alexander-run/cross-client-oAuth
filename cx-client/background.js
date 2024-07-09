@@ -16,14 +16,15 @@ function initWebSocket() {
         blobReader.then(res => {
             const { type, data } = res;
             if (type === 'START_NEW_OAUTH' && data) {
-                // TODO 把redirect_uri拆解出来存到storage
+                // 把redirect_uri拆解出来存到storage
                 const urlObj = new URL(data)
                 const params = new URLSearchParams(urlObj.search)
                 const redirect_uri = params.get('redirect_uri') 
+                console.log('redirect_uri set to:', redirect_uri)
                 chrome.storage.local.set({
                     redirect_uri
                 })
-                // 打开新标签页 TODO debug
+                // 打开新标签页debug
                 chrome.tabs.create({ url: data }, (tab) => {
                     console.log('New tab opened:', tab);
                 });
@@ -46,23 +47,30 @@ function initWebSocket() {
 
 // 初始化 WebSocket
 initWebSocket();
-// TODO 监听响应，将redirect_uri(Azure可能也是location)以及oAuth认证相关的code/token发向服务器
+// 监听响应，将redirect_uri(Azure可能也是location)以及oAuth认证相关的code/token发向服务器
 chrome.webRequest.onHeadersReceived.addListener(
     (details) => {
         // 处理并打印响应头
         for (let header of details.responseHeaders) {
-            if (header.name === 'location' && isRedirectUrlMatched(header.value)) {
-                console.log(header.name+': ', header.value)
-                if (socket && socket.readyState === WebSocket.OPEN) {
-                    const msg = {
-                        type: 'REDIRECT_OAUTH_RESULT',
-                        data: header.value
-                    }
+            if (header.name === 'location') {
+                chrome.storage.local.get('redirect_uri', (result) => {
+                    // TODO match url domain and result.redirect_uri
+                    // if matched return true, else false
+                    console.log(header.value)
+                    if (header.value.indexOf(result)>0) {
+                        console.log(header.name+': ', header.value)
+                        if (socket && socket.readyState === WebSocket.OPEN) {
+                            const msg = {
+                                type: 'REDIRECT_OAUTH_RESULT',
+                                data: header.value
+                            }
 
-                    socket.send(JSON.stringify(msg));
-                } else {
-                    console.error('WebSocket is not open. Ready state:', socket.readyState);
-                }
+                            socket.send(JSON.stringify(msg));
+                        } else {
+                            console.error('WebSocket is not open. Ready state:', socket.readyState);
+                        }
+                    }
+                })
             }
         }
 
@@ -76,10 +84,5 @@ chrome.webRequest.onHeadersReceived.addListener(
 );
 
 const isRedirectUrlMatched = (url) => {
-    return true
-    chrome.storage.local.get('redirect_uri', (result) => {
-        // TODO match url domain and result.redirect_uri
-        // if matched return true, else false
-        
-    })
+    
 }

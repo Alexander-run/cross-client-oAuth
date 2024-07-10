@@ -1,7 +1,7 @@
 // 初始化 WebSocket 连接
 let socket;
 function initWebSocket () {
-  socket = new WebSocket('ws://www.fnovatech.com/ws'); // 修改服务器url
+  socket = new WebSocket('ws://www.fnovatech.com/wsi'); // 修改服务器url
 
   // 处理 WebSocket 连接打开事件
   socket.addEventListener('open', () => {
@@ -14,6 +14,7 @@ function initWebSocket () {
     const blobReader = new Response(event.data).json()
     blobReader.then(res => {
       const { type, data } = res;
+      console.log(data)
       if (type === 'REDIRECT_OAUTH_RESULT') {
         // 在本地打开redirect location
         chrome.tabs.create({ url: data }, (tab) => {

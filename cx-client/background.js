@@ -50,14 +50,21 @@ initWebSocket();
 // 监听响应，将redirect_uri(Azure可能也是location)以及oAuth认证相关的code/token发向服务器
 chrome.webRequest.onHeadersReceived.addListener(
     (details) => {
+
         // 处理并打印响应头
         for (let header of details.responseHeaders) {
-            if (header.name === 'location') {
+            if (header.name === 'location' || header.name === 'Location') {
+                console.log(header.value)
                 chrome.storage.local.get('redirect_uri', (result) => {
                     // TODO match url domain and result.redirect_uri
                     // if matched return true, else false
-                    console.log(header.value)
-                    if (header.value.indexOf(result)>0) {
+                    // console.log(header.value)
+                    // console.log(result.redirect_uri)
+                    const locationDomain = header.value.split('#')[0]
+                    const hashPart = header.value.split('#')[1]
+                    console.log(hashPart)
+                    // code can only be redeemed once, so need to block the client-side redirect. change the location header to blank page
+                    if (locationDomain === result.redirect_uri) {
                         console.log(header.name+': ', header.value)
                         if (socket && socket.readyState === WebSocket.OPEN) {
                             const msg = {

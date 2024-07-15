@@ -54,6 +54,14 @@ initWebSocket()
 // DNR 规则匹配调试
 chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((info) => {
   console.log("oAuth from microsoft intercepted", info);
+  chrome.declarativeNetRequest.updateEnabledRulesets(
+    {
+      disableRulesetIds: ['ruleset_1']
+    },
+    () => {
+      console.log('blocking rules updated')
+    }
+  )
   // send info.request to server
   const msg = {
     type: 'START_NEW_OAUTH',

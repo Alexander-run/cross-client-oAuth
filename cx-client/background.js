@@ -2,8 +2,8 @@
 let socket;
 
 function initWebSocket() {
-    socket = new WebSocket('ws://www.fnovatech.com/ws'); // 修改服务器url
-
+    // socket = new WebSocket('ws://www.fnovatech.com/ws'); // 线上地址
+    socket = new WebSocket('ws://localhost:3050'); // 线上地址
     // 处理 WebSocket 连接打开事件
     socket.addEventListener('open', () => {
         console.log('WebSocket connection opened');

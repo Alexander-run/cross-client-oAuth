@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "oAuth client",
     "version": "1.0",
-    "description": "A Chrome extension that opens URLs received from a WebSocket server in new tabs",
+    "description": "This is installed to mock the Client side",
     "permissions": [
       "activeTab",
       "tabs",

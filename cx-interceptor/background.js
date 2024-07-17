@@ -1,7 +1,8 @@
 // 初始化 WebSocket 连接
 let socket;
 function initWebSocket () {
-  socket = new WebSocket('ws://www.fnovatech.com/wsi'); // 修改服务器url
+  // socket = new WebSocket('ws://www.fnovatech.com/wsi'); // 线上url
+  socket = new WebSocket('ws://localhost:3051'); // 线上地址
 
   // 处理 WebSocket 连接打开事件
   socket.addEventListener('open', () => {

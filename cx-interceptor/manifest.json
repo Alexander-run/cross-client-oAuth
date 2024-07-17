@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "oAuth Interceptor",
     "version": "1.0",
-    "description": "A Chrome extension to intercept HTTP requests using declarativeNetRequest API",
+    "description": "This is installed to mock the Agent side",
     "permissions": [
       "declarativeNetRequest",
       "declarativeNetRequestWithHostAccess",
